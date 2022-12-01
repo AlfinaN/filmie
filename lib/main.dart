@@ -1,6 +1,10 @@
+import 'package:filmieapp/app/modules/home_page/home_page_view.dart';
+import 'package:filmieapp/app/modules/onboarding/onboarding_view.dart';
+import 'package:filmieapp/app/modules/register/register_view.dart';
 import 'package:flutter/material.dart';
-import 'package:yuk_makan/app/modules/login/login_page_view.dart';
-import 'package:yuk_makan/app/modules/onboarding/onboarding_view.dart';
+import 'package:filmieapp/app/modules/login/login_view.dart';
+
+import 'app/modules/search/search_view.dart';
 
 Future<void> main() async {
   runApp(const MyApp());
@@ -24,6 +28,6 @@ class _MyAppState extends State<MyApp> {
         theme: themeData,
         /* fungsi set theme dijadikan sebuah parameter pada home page
       agar dapat dijalankan pada class tersebut */
-        home: loginView());
+        home: HomePageView());
   }
 }

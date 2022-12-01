@@ -1,7 +1,13 @@
+import 'package:dio/dio.dart';
+import 'package:filmieapp/app/constants.dart';
+import 'package:filmieapp/app/modules/home_page/home_page_view.dart';
+import 'package:filmieapp/app/modules/register/register_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:hexcolor/hexcolor.dart';
+
+import '../onboarding/onboarding_view.dart';
 
 class loginView extends StatefulWidget {
   const loginView({super.key});
@@ -17,16 +23,22 @@ class _loginViewState extends State<loginView> {
     color: Colors.black,
   );
 
+  TextEditingController emailController = TextEditingController();
+  TextEditingController pwdController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Colors.white,
           leading: GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => OnboardingView()));
+            },
             child: const Icon(
               Icons.arrow_back,
-              color: Colors.black,
+              color: semiBlack,
             ),
           )),
       body: Padding(
@@ -43,7 +55,7 @@ class _loginViewState extends State<loginView> {
                       Text(
                         "Welcome Back",
                         style: TextStyle(
-                          color: Colors.black87,
+                          color: semiBlack,
                           fontWeight: FontWeight.bold,
                           fontSize: 24,
                         ),
@@ -51,7 +63,7 @@ class _loginViewState extends State<loginView> {
                       SizedBox(height: 3),
                       Text("Login to your account",
                           style: TextStyle(
-                            color: Colors.black54,
+                            color: darkGrey,
                             fontSize: 16,
                             fontFamily: 'Poppins Light',
                           )),
@@ -60,9 +72,8 @@ class _loginViewState extends State<loginView> {
                 ),
                 SizedBox(height: 25),
                 TextField(
-                  //controller: emailController,
+                  controller: emailController,
                   style: const TextStyle(
-                    fontFamily: 'Poppins Light',
                     fontSize: 16,
                   ),
                   decoration: InputDecoration(
@@ -74,16 +85,14 @@ class _loginViewState extends State<loginView> {
                     contentPadding:
                         EdgeInsets.symmetric(horizontal: 20, vertical: 18),
                     hintStyle: const TextStyle(
-                      fontFamily: 'Poppins Light',
                       fontSize: 16,
                     ),
                   ),
                 ),
                 SizedBox(height: 18),
                 TextField(
-                  //controller: pwdController,
+                  controller: pwdController,
                   style: const TextStyle(
-                    fontFamily: 'Poppins Light',
                     fontSize: 16,
                   ),
                   decoration: InputDecoration(
@@ -113,24 +122,56 @@ class _loginViewState extends State<loginView> {
                 //   ),
                 // ),
                 const Spacer(),
-                Container(
-                    margin: EdgeInsets.only(top: 30),
-                    width: 214,
-                    height: 50,
-                    child: ElevatedButton(
-                        style: ButtonStyle(
-                            minimumSize:
-                                MaterialStateProperty.all(const Size(200, 20)),
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                HexColor('FFCC00')),
-                            shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                    side: BorderSide(
-                                        color: HexColor('FFCC00'))))),
-                        onPressed: () {},
-                        child: Text('Login', style: style2))),
+                ElevatedButton(
+                  onPressed: () async {
+                    try {
+                      var email = await Dio().get(
+                          'http://localhost:3000/users?email=${emailController.text}');
+                      var password = await Dio().get(
+                          'http://localhost:3000/users?password=${pwdController.text}');
+                      if (email.data.length > 0) {
+                        if (password.data.length > 0) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomePageView()));
+                        } else {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            backgroundColor: Colors.redAccent,
+                            content: Text("Password Salah"),
+                          ));
+                        }
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                backgroundColor: Colors.redAccent,
+                                content: Text("Email Salah")));
+                      }
+                    } catch (e) {
+                      final snackBar = SnackBar(
+                        backgroundColor: Colors.redAccent,
+                        content: Text(
+                          "Ada kesalahan pada server",
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }
+                  },
+                  style: ButtonStyle(
+                      minimumSize:
+                          MaterialStateProperty.all(const Size(200, 60)),
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(YellowAccent),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              side: BorderSide(color: YellowAccent)))),
+                  child: Text("Login", style: style2),
+                ),
                 const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -139,16 +180,21 @@ class _loginViewState extends State<loginView> {
                         style: TextStyle(
                           fontFamily: 'Poppins Light',
                           fontSize: 16,
-                          color: Colors.black54,
+                          color: darkGrey,
                         )),
-                    SizedBox(width: 7),
+                    SizedBox(width: 0),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RegisterView()));
+                      },
                       child: const Text("Sign up",
                           style: TextStyle(
                             fontFamily: 'Poppins Light',
                             fontSize: 16,
-                            color: Colors.amber,
+                            color: YellowFont,
                           )),
                     ),
                   ],
