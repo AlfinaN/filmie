@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:filmieapp/app/constants.dart';
 import 'package:filmieapp/app/modules/login/login_view.dart';
 import 'package:filmieapp/app/modules/onboarding/onboarding_view.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,7 +16,7 @@ class _RegisterView extends State<RegisterView> {
   TextStyle style2 = TextStyle(
     fontSize: 20,
     fontWeight: FontWeight.bold,
-    color: Colors.black,
+    color: Colors.white,
   );
 
   TextEditingController controllerUsername = TextEditingController();
@@ -159,13 +160,12 @@ class _RegisterView extends State<RegisterView> {
               },
               style: ButtonStyle(
                   minimumSize: MaterialStateProperty.all(const Size(200, 60)),
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(HexColor('FFCC00')),
+                  backgroundColor: MaterialStateProperty.all<Color>(BlueAccent),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
-                          side: BorderSide(color: HexColor('FFCC00'))))),
-              child: Text("Login", style: style2),
+                          side: BorderSide(color: BlueAccent)))),
+              child: Text("Register", style: style2),
             ),
             const SizedBox(height: 10),
             Row(
@@ -182,7 +182,7 @@ class _RegisterView extends State<RegisterView> {
                     style: TextStyle(
                       fontFamily: 'Poppins Light',
                       fontSize: 16,
-                      color: Colors.amber,
+                      color: BlueAccent,
                     )),
               ],
             ),

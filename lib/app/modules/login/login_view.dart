@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:filmieapp/app/constants.dart';
 import 'package:filmieapp/app/modules/home_page/home_page_view.dart';
 import 'package:filmieapp/app/modules/register/register_view.dart';
+import 'package:filmieapp/app/service/filmie_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -20,7 +21,7 @@ class _loginViewState extends State<loginView> {
   TextStyle style2 = TextStyle(
     fontSize: 20,
     fontWeight: FontWeight.bold,
-    color: Colors.black,
+    color: Colors.white,
   );
 
   TextEditingController emailController = TextEditingController();
@@ -124,6 +125,9 @@ class _loginViewState extends State<loginView> {
                 const Spacer(),
                 ElevatedButton(
                   onPressed: () async {
+                    String usernamez, emailz, passwordz;
+                    int id;
+
                     try {
                       var email = await Dio().get(
                           'http://localhost:3000/users?email=${emailController.text}');
@@ -131,10 +135,13 @@ class _loginViewState extends State<loginView> {
                           'http://localhost:3000/users?password=${pwdController.text}');
                       if (email.data.length > 0) {
                         if (password.data.length > 0) {
+                          id = email.data[0]['id'];
+
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => HomePageView()));
+                                  builder: (context) =>
+                                      HomePageView(user: id)));
                         } else {
                           ScaffoldMessenger.of(context)
                               .showSnackBar(const SnackBar(
@@ -165,11 +172,11 @@ class _loginViewState extends State<loginView> {
                       minimumSize:
                           MaterialStateProperty.all(const Size(200, 60)),
                       backgroundColor:
-                          MaterialStateProperty.all<Color>(YellowAccent),
+                          MaterialStateProperty.all<Color>(BlueAccent),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
-                              side: BorderSide(color: YellowAccent)))),
+                              side: BorderSide(color: BlueAccent)))),
                   child: Text("Login", style: style2),
                 ),
                 const SizedBox(height: 10),
@@ -194,7 +201,7 @@ class _loginViewState extends State<loginView> {
                           style: TextStyle(
                             fontFamily: 'Poppins Light',
                             fontSize: 16,
-                            color: YellowFont,
+                            color: BlueAccent,
                           )),
                     ),
                   ],

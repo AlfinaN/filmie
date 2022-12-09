@@ -1,20 +1,20 @@
 class FilmieModel {
-  final String product_name, img_url, description;
-  final int price;
+  final String Title, Poster, Year, Plot, Star;
 
   FilmieModel({
-    required this.product_name,
-    required this.img_url,
-    required this.description,
-    required this.price,
+    required this.Title,
+    required this.Poster,
+    required this.Year,
+    required this.Plot,
+    required this.Star,
   });
 
   factory FilmieModel.fromJSON(Map parsedJson) {
     return FilmieModel(
-      product_name: parsedJson['product_name'],
-      img_url: parsedJson['img_url'],
-      description: parsedJson['description'],
-      price: parsedJson['price'],
-    );
+        Title: parsedJson['Title'],
+        Poster: parsedJson['Poster'],
+        Year: parsedJson['Year'],
+        Plot: parsedJson['Plot'],
+        Star: parsedJson['Star']);
   }
 }

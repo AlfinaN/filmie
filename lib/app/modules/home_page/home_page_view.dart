@@ -1,4 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:filmieapp/app/constants.dart';
+import 'package:filmieapp/app/modules/account/account_view.dart';
+import 'package:filmieapp/app/modules/detailFilm/detail_page_view.dart';
+import 'package:filmieapp/app/modules/mydrawer.dart';
+import 'package:filmieapp/app/modules/account/account_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,50 +12,65 @@ import 'package:filmieapp/app/data/models/filmie_models.dart';
 import '../../service/filmie_service.dart';
 
 class HomePageView extends StatefulWidget {
-  const HomePageView({super.key});
+  int user;
+  HomePageView({Key? key, required this.user}) : super(key: key);
 
   @override
   State<HomePageView> createState() => _HomePageViewState();
 }
 
 class _HomePageViewState extends State<HomePageView> {
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-
   static const TextStyle loading =
       TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: lightGrey);
+
+  static const TextStyle Title =
+      TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: BlueAccent);
+
+  static const TextStyle Year = TextStyle(fontSize: 12, color: Colors.black);
+
+  // static List<Widget> _myPages = <Widget>[HomePageView(), AccountView(model: ), SearchView()];
+
+  // int _selectedIndex = 0;
+
+  // void _onItemTapped(int index) {
+  //   setState(() {
+  //     _selectedIndex = index;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: HexColor('FFA600'),
+        backgroundColor: BlueAccent,
         title: Text(
           "Home",
           style: TextStyle(color: Colors.white),
         ),
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.bookmark))],
+        // actions: [IconButton(onPressed: () {}, icon: Icon(Icons.bookmark))],
+      ),
+      drawer: Drawer(
+        child: myDrawer(
+          user: widget.user,
+        ),
+        backgroundColor: Colors.white,
       ),
       body: FutureBuilder<List<FilmieModel>>(
-        future: FilmieService.fetchFilm(),
+        future: FilmieService().fetchFilm(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
-                child: Text(
-              'Loading',
-              style: loading,
-            )); // apabila snapshot.data maka muncul null karena sedang proses menampilkan data
+              child: CircularProgressIndicator(),
+            );
           } else {
             if (snapshot.hasError) {
               return Center(
-                child: /*Text(
-                    'Error: ${snapshot.error}'),*/
-                    Text(
-                  'Server sedang error',
-                  style: loading,
-                ),
-                // apabila snapshot.data maka muncul Error: null karena gagal mengambil data
+                child: Text('Error: ${snapshot.error}'),
+                //     Text(
+                //   'Server sedang error',
+                //   style: loading,
+                // ),
               );
             } else {
               return Padding(
@@ -68,34 +88,43 @@ class _HomePageViewState extends State<HomePageView> {
                             crossAxisSpacing: 10,
                             childAspectRatio: 0.75),
                     itemBuilder: (context, index) {
-                      return Column(
-                        children: <Widget>[
-                          Expanded(
-                              child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                image: DecorationImage(
-                                    fit: BoxFit.fill,
-                                    image: NetworkImage(
-                                        "${snapshot.data![index].img_url}"))),
-                          )),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            "${snapshot.data![index].product_name}",
-                            style: const TextStyle(color: Colors.grey),
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            "${snapshot.data![index].price}",
-                            style: const TextStyle(
-                                color: Colors.amber,
-                                fontWeight: FontWeight.bold),
-                          )
-                        ],
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => DetailView(
+                                        detail: snapshot.data![index],
+                                        user: widget.user,
+                                      )));
+                        },
+                        child: Column(
+                          children: <Widget>[
+                            Expanded(
+                                child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  image: DecorationImage(
+                                      fit: BoxFit.fill,
+                                      image: NetworkImage(
+                                          "${snapshot.data![index].Poster}"))),
+                            )),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              "${snapshot.data![index].Title}",
+                              style: Title,
+                            ),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              "${snapshot.data![index].Year}",
+                              style: Year,
+                            ),
+                          ],
+                        ),
                       );
                     },
                   )),
@@ -104,27 +133,6 @@ class _HomePageViewState extends State<HomePageView> {
             }
           }
         },
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: HexColor('FFA600'),
-        selectedFontSize: 13,
-        unselectedFontSize: 13,
-        iconSize: 30,
-        items: [
-          BottomNavigationBarItem(
-            label: "",
-            icon: Icon(Icons.home),
-          ),
-          BottomNavigationBarItem(
-            label: "",
-            icon: Icon(Icons.search),
-          ),
-          BottomNavigationBarItem(
-            label: "",
-            icon: Icon(Icons.account_circle_outlined),
-          ),
-        ],
       ),
     );
   }

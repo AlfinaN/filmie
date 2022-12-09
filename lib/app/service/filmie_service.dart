@@ -2,41 +2,39 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:filmieapp/app/data/models/filmie_models.dart';
 
+import '../data/models/user_model.dart';
+
 class FilmieService {
-  static Future<List<FilmieModel>> fetchFilm() async {
-    Response response = await Dio().get(
-        "https://my-does-app-5c4a7-default-rtdb.firebaseio.com/ramene.json");
-    List<FilmieModel> ramens = (response.data['data'] as List)
-        .map((v) => FilmieModel.fromJSON(v))
-        .toList();
+  var baseurlapi = "http://localhost:3000";
+  var dio = Dio();
+
+  Future<List<FilmieModel>> fetchFilm() async {
+    Response response = await Dio().get('$baseurlapi/data');
+    List<FilmieModel> ramens =
+        (response.data as List).map((v) => FilmieModel.fromJSON(v)).toList();
     return ramens;
   }
 
-  static Future<Map<String, dynamic>> getDataFilm() async {
+  Future<Map<String, dynamic>> getDataFilm() async {
     Dio dio = Dio();
-    var response = await dio.get(
-        'https://my-does-app-5c4a7-default-rtdb.firebaseio.com/ramene.json');
+    var response = await dio.get('$baseurlapi/data');
     print('status code : ${response.statusCode}');
     var dataResponse = response.data;
     return dataResponse;
   }
 
-  static Future<List<dynamic>> getDataFilmFake() async {
-    Dio dio = Dio();
-    var response = await dio.get('http://localhost:3000/data');
-    print('status code : ${response.statusCode}');
-    var dataResponse = response.data;
+  // Future<List<dynamic>> getDataFilmFake() async {
+  //   Dio dio = Dio();
+  //   var response = await dio.get('$baseurlapi/data');
+  //   print('status code : ${response.statusCode}');
+  //   var dataResponse = response.data;
 
-    return dataResponse;
-  }
+  //   return dataResponse;
+  // }
 
-  // memfilter judul
-  static Future<List<FilmieModel>> SearchFilm() async {
-    Response response = await Dio().get(
-        "https://my-does-app-5c4a7-default-rtdb.firebaseio.com/ramene.json");
-    List<FilmieModel> ramens = (response.data['data'] as List)
-        .map((v) => FilmieModel.fromJSON(v))
-        .toList();
-    return ramens;
+  Future<UserModel> fetchUser(int id_user) async {
+    Response response = await Dio().get('$baseurlapi/users/$id_user');
+    UserModel users = UserModel.fromJSON(response.data);
+    return users;
   }
 }

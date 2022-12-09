@@ -22,7 +22,7 @@ class _OnboardingViewState extends State<OnboardingView> {
   TextStyle style2 = TextStyle(
     fontSize: 20,
     fontWeight: FontWeight.bold,
-    color: Colors.black,
+    color: Colors.white,
   );
 
   @override
@@ -82,14 +82,14 @@ class _OnboardingViewState extends State<OnboardingView> {
                                       const Size(200, 60)),
                                   backgroundColor:
                                       MaterialStateProperty.all<Color>(
-                                          YellowAccent),
+                                          BlueAccent),
                                   shape: MaterialStateProperty.all<
                                           RoundedRectangleBorder>(
                                       RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(20),
-                                          side: BorderSide(
-                                              color: YellowAccent)))),
+                                          side:
+                                              BorderSide(color: BlueAccent)))),
                               onPressed: () {
                                 Navigator.push(
                                     context,
